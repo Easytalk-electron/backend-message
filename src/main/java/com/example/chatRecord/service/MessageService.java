@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +22,19 @@ public class MessageService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public String getMessageByIndex(@NotNull String key, long index) {
-        return stringRedisTemplate.opsForList().index(key, index);
+    public JSONObject getMessageByIndex(@NotNull String key, long index) {
+        return JSONObject.parseObject(stringRedisTemplate.opsForList().index(key, index));
     }
 
-    public List<String> getMessageByNum(@NotNull String key, long num) {
+    public List<JSONObject> getMessageByNum(@NotNull String key, long num) {
         long right = getMessageCount(key);
         long left = Long.max(right - num, 0);
-        return stringRedisTemplate.opsForList().range(key, left, right);
+        List<JSONObject> result = new ArrayList<>();
+        var value = stringRedisTemplate.opsForList().range(key, left, right);
+        for (var s : value) {
+            result.add(JSONObject.parseObject(s));
+        }
+        return result;
     }
 
     public long getMessageCount(@NotNull String key) {

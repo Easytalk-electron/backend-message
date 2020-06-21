@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,10 +24,14 @@ public class OnlineService {
         return sessionIdMap.get(session);
     }
 
-    public void online(@NotNull String id, @NotNull Session session) {
+    public void online(@NotNull String id, @NotNull Session session) throws IOException {
         int n = sessionNum.addAndGet(1);
         System.out.println(String.format("用户%s上线了，当前在线人数为：%d", id, n));
         idSessionMap.put(id, session);
+        var old_session = idSessionMap.get(id);
+        if (old_session != null) {
+            old_session.close();
+        }
         sessionIdMap.put(session, id);
     }
 
