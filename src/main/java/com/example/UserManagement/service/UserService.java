@@ -77,4 +77,12 @@ public class UserService {
         }
         return result;
     }
+    /**
+     * 获取好友列表
+     * @param user 用户名和密码
+     * @return Result
+     */
+    public int[] getFriendList(User user){
+
+    }
 }

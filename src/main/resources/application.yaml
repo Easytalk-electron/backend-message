@@ -14,13 +14,8 @@ spring:
         max-idle: 10
         min-idle: 5
   datasource:
-<<<<<<< HEAD
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/easytalk?characterEncoding=utf8
-=======
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/learn?useUnicode=true&characterEncoding=utf-8&useSSL=false
->>>>>>> 6dff5e11e8837a27d5159e63f2bee0526217fb56
     username: root
     password: 4869
     resources:
