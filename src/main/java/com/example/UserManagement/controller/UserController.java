@@ -25,23 +25,30 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public JSONObject regist(@NotNull JSONObject request) {
-        var data = securityService.decryptDataJSON(request);
-        if (data == null) {
-            Result result = new Result("data", false, HttpStatus.BAD_REQUEST);
+
+        if (request == null) {
+            Result result = new Result("null request", false, HttpStatus.BAD_REQUEST);
             JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
             return jo;
         }
 
-        var password = data.getString("password");
+        var username = request.getString("userName");
+        if (username == null) {
+            Result result = new Result("null username", false, HttpStatus.BAD_REQUEST);
+            JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
+            return jo;
+        }
+
+        var password = request.getString("password");
         if (password == null) {
-            Result result = new Result("password", false, HttpStatus.BAD_REQUEST);
+            Result result = new Result("null password", false, HttpStatus.BAD_REQUEST);
             JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
             return jo;
         }
 
         var user = new User();
         user.setPassword(password);
-        user.setUsername(data.getString("userName"));
+        user.setUsername(username);
 
         Result result = userService.regist(user);
         JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
@@ -50,23 +57,23 @@ public class UserController {
 
     @PostMapping(value = "/login")
     public JSONObject login(@NotNull JSONObject request) {
-        var data = securityService.decryptDataJSON(request);
-        if (data == null) {
-            Result result = new Result("data", false, HttpStatus.BAD_REQUEST);
+//        var data = securityService.decryptDataJSON(request);
+        if (request == null) {
+            Result result = new Result("null request", false, HttpStatus.BAD_REQUEST);
             JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
             return jo;
         }
 
-        var uid = data.getString("id");
+        var uid = request.getString("id");
         if (uid == null) {
-            Result result = new Result("id", false, HttpStatus.BAD_REQUEST);
+            Result result = new Result("null id", false, HttpStatus.BAD_REQUEST);
             JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
             return jo;
         }
 
-        var password = data.getString("password");
+        var password = request.getString("password");
         if (password == null) {
-            Result result = new Result("password", false, HttpStatus.BAD_REQUEST);
+            Result result = new Result("null password", false, HttpStatus.BAD_REQUEST);
             JSONObject jo = JSONObject.parseObject(JSONObject.toJSONString(result));
             return jo;
         }

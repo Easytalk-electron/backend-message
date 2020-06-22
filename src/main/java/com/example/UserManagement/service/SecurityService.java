@@ -105,7 +105,7 @@ public class SecurityService {
 
     @Nullable
     public JSONObject decryptDataJSON(@NotNull JSONObject src) {
-        var uuid = src.getString("uuid");
+        var uuid = src.getString("id");
         if (uuid == null) {
             return null;
         }
@@ -126,6 +126,23 @@ public class SecurityService {
         }
         byte[] b = decrypt(Base64.getDecoder().decode(data), privateKey);
         return b == null ? null : JSONObject.parseObject(new String(b));
+    }
+
+    @Nullable
+    public String decryptDataString(@NotNull String src, @NotNull String uuid) {
+        if (!useRSA) {
+            return src;
+        }
+        var privateKeyBase64 = getPrivateKeyByUuid(uuid);
+        if (privateKeyBase64 == null) {
+            return null;
+        }
+        var privateKey = getPrivateKeyFromBase64(privateKeyBase64);
+        if (privateKey == null) {
+            return null;
+        }
+        byte[] b = decrypt(Base64.getDecoder().decode(src), privateKey);
+        return new String(b);
     }
 
 }
