@@ -28,10 +28,10 @@ public class OnlineService {
         int n = sessionNum.addAndGet(1);
         System.out.println(String.format("用户%s上线了，当前在线人数为：%d", id, n));
         idSessionMap.put(id, session);
-        var old_session = idSessionMap.get(id);
+        /*var old_session = idSessionMap.get(id);
         if (old_session != null) {
             old_session.close();
-        }
+        }*/
         sessionIdMap.put(session, id);
     }
 
