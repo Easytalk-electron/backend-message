@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @ServerEndpoint("/online")
-public class MyWebSocket {
+public class OnlineWebSocket {
 
     @Setter
     private static ApplicationContext applicationContext;
@@ -25,12 +25,12 @@ public class MyWebSocket {
 
     @Autowired
     public void setOnlineService(MessageService messageService) {
-        MyWebSocket.messageService = messageService;
+        OnlineWebSocket.messageService = messageService;
     }
 
     @Autowired
     public void setOnlineService(OnlineService onlineService) {
-        MyWebSocket.onlineService = onlineService;
+        OnlineWebSocket.onlineService = onlineService;
     }
 
     @OnOpen
@@ -55,7 +55,7 @@ public class MyWebSocket {
     @OnClose
     public void onClose(@NotNull Session session) {
         var id = onlineService.getIdBySession(session);
-        if (id != null) {
+        if (id != null && onlineService.getSessionById(id) == session) {
             onlineService.offline(id, session);
         }
     }

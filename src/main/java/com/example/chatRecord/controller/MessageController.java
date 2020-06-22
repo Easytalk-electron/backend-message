@@ -1,5 +1,6 @@
 package com.example.chatRecord.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.chatRecord.service.MessageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,25 +18,25 @@ public class MessageController {
     private MessageService messageService;
 
     @GetMapping("/getPrivateMessageByIndex")
-    String getPrivateMessageByIndex(@NotNull String from, @NotNull String to, long index) {
+    JSONObject getPrivateMessageByIndex(@NotNull String from, @NotNull String to, long index) {
         var key = messageService.generateRedisKeyForPrivateChat(from, to);
         return messageService.getMessageByIndex(key, index);
     }
 
     @GetMapping("/getGroupMessageByIndex")
-    String getGroupMessageByIndex(@NotNull String group, long index) {
+    JSONObject getGroupMessageByIndex(@NotNull String group, long index) {
         var key = messageService.generateRedisKeyForGroupChat(group);
         return messageService.getMessageByIndex(key, index);
     }
 
     @GetMapping("/getPrivateMessageByNum")
-    List<String> getPrivateMessageByNum(@NotNull String from, @NotNull String to, long num, @Nullable Long end) {
+    List<JSONObject> getPrivateMessageByNum(@NotNull String from, @NotNull String to, long num, @Nullable Long end) {
         var key = messageService.generateRedisKeyForPrivateChat(from, to);
         return messageService.getMessageByNum(key, num);
     }
 
     @GetMapping("/getGroupMessageByNum")
-    List<String> getGroupMessageByNum(@NotNull String group, long num, @Nullable Long end) {
+    List<JSONObject> getGroupMessageByNum(@NotNull String group, long num, @Nullable Long end) {
         var key = messageService.generateRedisKeyForGroupChat(group);
         return messageService.getMessageByNum(key, num);
     }
