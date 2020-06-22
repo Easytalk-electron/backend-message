@@ -1,5 +1,6 @@
 package com.example.UserManagement.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.UserManagement.bean.Result;
 import com.example.UserManagement.entity.User;
 import com.example.UserManagement.service.UserService;
@@ -16,7 +17,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/register")
-    public Result regist(User user) {
+    public Result regist(JSONObject user) {
+
         return userService.regist(user);
     }
 

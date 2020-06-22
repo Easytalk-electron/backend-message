@@ -1,5 +1,6 @@
 server:
-  port: 9090
+  port: 8080
+
 
 spring:
   redis:
@@ -14,7 +15,7 @@ spring:
         min-idle: 5
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/login?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/easytalk?characterEncoding=utf8
     username: root
     password: qwe123456
     resources:
