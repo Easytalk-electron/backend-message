@@ -15,6 +15,8 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private SecurityService securityService;
     /**
      * 注册
      * @param user 参数封装

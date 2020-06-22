@@ -1,11 +1,17 @@
 package com.example.UserManagement.entity;
 
+import org.apache.shiro.crypto.hash.Sha256Hash;
+
+import javax.persistence.Column;
+
 public class User {
     private int id;
     private String username;
-    private String password;
     private String introduction;
     private String headPic;
+
+    @Column(nullable = false, columnDefinition = "char(64)")
+    private String password;
 
 
     //... getter and setter
@@ -16,10 +22,6 @@ public class User {
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getIntroduction() {
@@ -38,8 +40,16 @@ public class User {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String _password) {
+        password = new Sha256Hash(_password).toHex();
+    }
+
+    public boolean checkPassword(String _password) {
+        return password.equals(new Sha256Hash(_password).toHex());
+    }
+
+    public boolean checkPasswordHash(String _passwordHash) {
+        return password.equals(_passwordHash);
     }
 
     public void setIntroduction(String introduction) {
