@@ -15,8 +15,8 @@ spring:
         min-idle: 5
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/easytalk?characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/users?characterEncoding=utf8
     username: root
-    password: 4869
+    password: qwe123456
     resources:
       static-locations: classpath:/templates

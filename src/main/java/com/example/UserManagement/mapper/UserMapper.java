@@ -4,6 +4,8 @@ import com.example.UserManagement.entity.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * mapper的具体表达式
  */
@@ -29,7 +31,7 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    @Insert("insert into user values(id=#{id},name=#{username},password=#{password})")
+    @Insert("insert into user (id, name, password) values(#{id},#{username},#{password})")
     //加入该注解可以保存对象后，查看对象插入id
     @Options(useGeneratedKeys = true,keyProperty = "id",keyColumn = "id")
     void regist(User user);
@@ -39,6 +41,15 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    @Select("select u.name from user u where u.id = #{id} and password = #{password}")
+    @Select("select u.name from user u where u.id = #{id} and u.password = #{password}")
     String login(User user);
+
+
+    @Select(value = "select * from user u where u.id<>#{id}")
+    @Results
+            ({@Result(property = "id",column = "id"),
+                    @Result(property = "username",column = "name"),
+                    @Result(property = "headPic",column = "headPic"),
+                    @Result(property = "introduction",column = "introduction")})
+    List<User> findUsersById(@Param("id") int id);
 }

@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
 public class UserService {
@@ -77,12 +80,19 @@ public class UserService {
         }
         return result;
     }
-    /**
-     * 获取好友列表
-     * @param user 用户名和密码
-     * @return Result
-     */
-    public int[] getFriendList(User user){
 
+    public Result<List<User>> getFriendList(int id){
+        Result<List<User>> result = new Result<>();
+        try{
+            List<User> userList = userMapper.findUsersById(id);
+            result.setDetail(userList);
+            result.setSuccess(true);
+            result.setMsg("获取成功");
+        } catch (Exception e){
+            result.setMsg(e.getMessage());
+            result.setSuccess(false);
+            e.printStackTrace();
+        }
+        return result;
     }
 }
