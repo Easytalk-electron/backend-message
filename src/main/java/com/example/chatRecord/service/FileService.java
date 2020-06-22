@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FileService {
@@ -16,7 +17,7 @@ public class FileService {
     private RedisTemplate<String, Serializable> redisTemplate;
 
     public void upload(@NotNull MultipartFile src, @NotNull String id) throws IOException {
-        redisTemplate.opsForValue().set(generateRedisKeyForFile(id), src.getBytes());
+        redisTemplate.opsForValue().set(generateRedisKeyForFile(id), src.getBytes(), 7, TimeUnit.DAYS);
     }
 
     public byte[] download(@NotNull String id) {

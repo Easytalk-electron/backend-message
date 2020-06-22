@@ -1,5 +1,6 @@
 package com.example.chatRecord.websocket;
 
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.example.chatRecord.service.MessageService;
 import com.example.chatRecord.service.OnlineService;
@@ -54,47 +55,49 @@ public class OnlineWebSocket {
 
     @OnClose
     public void onClose(@NotNull Session session) {
-        var id = onlineService.getIdBySession(session);
-        if (id != null && onlineService.getSessionById(id) == session) {
-            onlineService.offline(id, session);
-        }
+        onlineService.offline(onlineService.getIdBySession(session), session);
     }
 
     @OnMessage
     public void onMessage(@NotNull String message_string, @NotNull Session session) throws IOException {
-        var message_json = JSONObject.parseObject(message_string);
-        var to = message_json.getString("to");
-        var groupId = message_json.getString("group");
-        if (to == null && groupId == null) {
-            sendJsonErrorText(session, "to || group");
-            return;
+        try {
+            var message_json = JSONObject.parseObject(message_string);
+            var to = message_json.getString("to");
+            var groupId = message_json.getString("group");
+            if (to == null && groupId == null) {
+                sendJsonErrorText(session, "to || group");
+                return;
+            }
+            if (to != null && groupId != null) {
+                sendJsonErrorText(session, "to && group");
+                return;
+            }
+            var content = message_json.getJSONObject("content");
+            if (content == null) {
+                sendJsonErrorText(session, "content");
+                return;
+            }
+            var time = String.valueOf(new java.sql.Timestamp(System.currentTimeMillis()));
+            var from = onlineService.getIdBySession(session);
+            JSONObject response;
+            if (to != null) {
+                response = messageService.sendMessageToPrivateChat(from, to, content, time);
+            }
+            else {
+                response = messageService.sendMessageToGroupChat(from, groupId, content, time);
+            }
+            session.getBasicRemote().sendText(response.toString());
         }
-        if (to != null && groupId != null) {
-            sendJsonErrorText(session, "to && group");
-            return;
+        catch (JSONException e) {
+            sendJsonErrorText(session, "json无法解析");
         }
-        var content = message_json.getJSONObject("content");
-        if (content == null) {
-            sendJsonErrorText(session, "content");
-            return;
-        }
-        var time = String.valueOf(new java.sql.Timestamp(System.currentTimeMillis()));
-        var from = onlineService.getIdBySession(session);
-        JSONObject response;
-        if (to != null) {
-            response = messageService.sendMessageToPrivateChat(from, to, content, time);
-        }
-        else {
-            response = messageService.sendMessageToGroupChat(from, groupId, content, time);
-        }
-        session.getBasicRemote().sendText(response.toString());
     }
 
     @OnError
     public void onError(@NotNull Session session, @NotNull Throwable error) {
-        System.err.println("发生错误");
-        System.out.println(session);
+        System.err.println("Session" + session + "发生错误");
         error.printStackTrace();
+        onlineService.offline(onlineService.getIdBySession(session), session);
     }
 
     private static void sendJsonErrorText(@NotNull Session session, @NotNull String key) throws IOException {

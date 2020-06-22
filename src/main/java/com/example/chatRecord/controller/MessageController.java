@@ -32,13 +32,13 @@ public class MessageController {
     @GetMapping("/getPrivateMessageByNum")
     List<JSONObject> getPrivateMessageByNum(@NotNull String from, @NotNull String to, long num, @Nullable Long end) {
         var key = messageService.generateRedisKeyForPrivateChat(from, to);
-        return messageService.getMessageByNum(key, num);
+        return messageService.getMessageByNum(key, num, end);
     }
 
     @GetMapping("/getGroupMessageByNum")
     List<JSONObject> getGroupMessageByNum(@NotNull String group, long num, @Nullable Long end) {
         var key = messageService.generateRedisKeyForGroupChat(group);
-        return messageService.getMessageByNum(key, num);
+        return messageService.getMessageByNum(key, num, end);
     }
 
     @GetMapping("/getPrivateMessageCount")

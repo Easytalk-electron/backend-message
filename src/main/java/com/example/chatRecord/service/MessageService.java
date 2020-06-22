@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -26,15 +27,11 @@ public class MessageService {
         return JSONObject.parseObject(stringRedisTemplate.opsForList().index(key, index));
     }
 
-    public List<JSONObject> getMessageByNum(@NotNull String key, long num) {
-        long right = getMessageCount(key);
+    public List<JSONObject> getMessageByNum(@NotNull String key, long num, @Nullable Long end) {
+        long right = end == null ? getMessageCount(key) : end;
         long left = Long.max(right - num, 0);
-        List<JSONObject> result = new ArrayList<>();
         var value = stringRedisTemplate.opsForList().range(key, left, right);
-        for (var s : value) {
-            result.add(JSONObject.parseObject(s));
-        }
-        return result;
+        return value.stream().map(JSONObject::parseObject).collect(Collectors.toList());
     }
 
     public long getMessageCount(@NotNull String key) {
@@ -75,6 +72,7 @@ public class MessageService {
                 var message = new JSONObject(value);
                 message.put("index", index);
                 message.put("type", "new");
+                message.put("group", group);
                 session.getBasicRemote().sendText(String.valueOf(message));
             }
         }
@@ -120,7 +118,7 @@ public class MessageService {
     @Nullable
     private String modifyContent(@NotNull JSONObject content) {
         System.out.println(content);
-        if (content.getString("type").equals("file")) {
+        if (!content.getString("type").equals("text")) {
             var uuid = UUID.randomUUID();
             content.put("uuid", uuid);
             return uuid.toString();

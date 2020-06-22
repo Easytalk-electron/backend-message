@@ -7,12 +7,10 @@ import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class OnlineService {
 
-    private static AtomicInteger sessionNum = new AtomicInteger(0);
     private static Map<String, Session> idSessionMap = new ConcurrentHashMap<>();
     private static Map<Session, String> sessionIdMap = new ConcurrentHashMap<>();
 
@@ -25,20 +23,21 @@ public class OnlineService {
     }
 
     public void online(@NotNull String id, @NotNull Session session) throws IOException {
-        int n = sessionNum.addAndGet(1);
-        System.out.println(String.format("用户%s上线了，当前在线人数为：%d", id, n));
+        var old_session = idSessionMap.get(id);
         idSessionMap.put(id, session);
-        /*var old_session = idSessionMap.get(id);
+        System.out.println(String.format("用户%s上线了，当前在线人数为：%d", id, idSessionMap.size()));
         if (old_session != null) {
             old_session.close();
-        }*/
+            sessionIdMap.remove(old_session);
+        }
         sessionIdMap.put(session, id);
     }
 
     public void offline(@NotNull String id, @NotNull Session session) {
-        int n = sessionNum.addAndGet(-1);
-        System.out.println(String.format("用户%s下线了，当前在线人数为：%d", id, n));
         sessionIdMap.remove(session);
-        idSessionMap.remove(id);
+        if (idSessionMap.get(id) == session) {
+            idSessionMap.remove(id);
+            System.out.println(String.format("用户%s下线了，当前在线人数为：%d", id, idSessionMap.size()));
+        }
     }
 }
