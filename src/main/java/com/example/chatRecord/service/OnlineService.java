@@ -1,5 +1,6 @@
 package com.example.chatRecord.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class OnlineService {
         idSessionMap.put(id, session);
         System.out.println(String.format("用户%s上线了，当前在线人数为：%d", id, idSessionMap.size()));
         if (old_session != null) {
+            var kicked = new JSONObject();
+            kicked.put("type", "kicked");
+            old_session.getBasicRemote().sendText(kicked.toString());
             old_session.close();
             sessionIdMap.remove(old_session);
         }

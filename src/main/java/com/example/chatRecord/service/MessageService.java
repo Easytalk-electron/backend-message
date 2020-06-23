@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.websocket.Session;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -70,7 +69,7 @@ public class MessageService {
         var idArray = userServerProxy.queryReceiversInGroup(group);
         for (var id : idArray) {
             var session = onlineService.getSessionById(id);
-            if (session != null && id != from) {
+            if (session != null && !id.equals(from)) {
                 var message = new JSONObject(value);
                 message.put("index", index);
                 message.put("type", "new");
