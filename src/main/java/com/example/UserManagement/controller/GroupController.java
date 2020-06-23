@@ -29,10 +29,11 @@ public class GroupController {
         Result result = groupService.getGroupMembers(id1);
         var userList = (List<User>)result.getDetail();
         JSONArray ja = new JSONArray();
-        for (int i = 0; i<userList.size(); ++i){
-            JSONObject jo = JSON.parseObject(JSON.toJSONString(userList.get(i)));
-            ja.add(jo);
-        }
+        if (userList!=null)
+            for (int i = 0; i<userList.size(); ++i){
+                JSONObject jo = JSON.parseObject(JSON.toJSONString(userList.get(i)));
+                ja.add(jo);
+            }
 
 
 
