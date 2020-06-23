@@ -1,6 +1,7 @@
 package com.example.chatRecord.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.chatRecord.proxy.UserServerProxy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +22,9 @@ public class MessageService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private UserServerProxy userServerProxy;
 
     public JSONObject getMessageByIndex(@NotNull String key, long index) {
         return JSONObject.parseObject(stringRedisTemplate.opsForList().index(key, index));
@@ -64,11 +67,10 @@ public class MessageService {
         var key = generateRedisKeyForGroupChat(group);
         var value = generateRedisValueForMessage(time, from, content);
         var index = saveMessage(key, value);
-        var sessionArray = new Session[2];
-        sessionArray[0] = onlineService.getSessionById("1");
-        sessionArray[1] = onlineService.getSessionById("2");
-        for (var session : sessionArray) {
-            if (session != null) {
+        var idArray = userServerProxy.queryReceiversInGroup(group);
+        for (var id : idArray) {
+            var session = onlineService.getSessionById(id);
+            if (session != null && id != from) {
                 var message = new JSONObject(value);
                 message.put("index", index);
                 message.put("type", "new");

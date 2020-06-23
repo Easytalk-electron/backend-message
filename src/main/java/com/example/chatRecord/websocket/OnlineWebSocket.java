@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.example.chatRecord.service.MessageService;
 import com.example.chatRecord.service.OnlineService;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -17,9 +15,6 @@ import java.io.IOException;
 @Component
 @ServerEndpoint("/online")
 public class OnlineWebSocket {
-
-    @Setter
-    private static ApplicationContext applicationContext;
 
     private static MessageService messageService;
     private static OnlineService onlineService;
