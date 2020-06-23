@@ -22,6 +22,16 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
+    @RequestMapping("/info")
+    public JSONObject getGroupName(@RequestBody Login login) {
+        String id = login.getId();
+        int id1 = Integer.parseInt(id);
+        Result result = groupService.getGroupName(id1);
+        String name = (String)result.getDetail();
+        name = "{\"name\":\""+name+"\"}";
+        return JSONObject.parseObject(name);
+    }
+
     @RequestMapping("/userList")
     public JSONArray getGroupMembers(@RequestBody Login login) {
         String id = login.getId();

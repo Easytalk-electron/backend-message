@@ -31,6 +31,21 @@ public class GroupService {
         return result;
     }
 
+    public Result<String> getGroupName(int id){
+        Result<String> result = new Result<>();
+        try{
+            String name = groupMapper.findGroupNameById(id);
+            result.setMsg("获取成功");
+            result.setSuccess(true);
+            result.setDetail(name);
+        } catch (Exception e){
+            result.setMsg(e.getMessage());
+            result.setSuccess(false);
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public Result addGroupMember(int gid, int uid){
         Result result = new Result();
         try{

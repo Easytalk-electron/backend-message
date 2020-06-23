@@ -22,4 +22,7 @@ public interface GroupMapper {
 
     @Insert("insert into guRelation (groupid, userid) values(#{gid},#{uid})")
     void addUser(GuRelation guRelation);
+
+    @Select("select name from groupinfo where id=#{id}")
+    String findGroupNameById(@Param("id") int id);
 }
