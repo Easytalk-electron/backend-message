@@ -1,5 +1,6 @@
 package com.example.UserManagement.mapper;
 
+import com.example.UserManagement.entity.Group;
 import com.example.UserManagement.entity.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -52,4 +53,9 @@ public interface UserMapper {
                     @Result(property = "headPic",column = "headPic"),
                     @Result(property = "introduction",column = "introduction")})
     List<User> findUsersById(@Param("id") int id);
+
+    @Select(value = "select * from guRelation gu where gu.userid=#{id}")
+    @Results
+            ({@Result(property = "gid",column = "groupid")})
+    List<Group> findGroupsById(@Param("id") int id);
 }

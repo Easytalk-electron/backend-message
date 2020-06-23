@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Group {
     private String gid;
+    private String name;
     private String new_uid;
     private List<Integer> uids;
 
@@ -19,6 +20,10 @@ public class Group {
         return new_uid;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setGid(String gid) {
         this.gid = gid;
     }
@@ -29,5 +34,13 @@ public class Group {
 
     public void setNew_uid(String new_uid) {
         this.new_uid = new_uid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUids(List<Integer> uids) {
+        this.uids = uids;
     }
 }
